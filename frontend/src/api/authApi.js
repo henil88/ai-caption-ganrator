@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const apiUrl = axios.create({
-  baseURL: "http://localhost:3000/api/auth",
+  baseURL: "https://ai-caption-ganrator.onrender.com/api/auth",
   withCredentials: true,
 });
 
