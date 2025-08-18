@@ -11,10 +11,9 @@ const AuthPage = () => {
   const { isAuthenticated } = useContext(AuthContext);
   const navigate = useNavigate();
 
-  // Redirect if already logged in
+  // redirect if already logged in
   useEffect(() => {
     if (isAuthenticated) {
-      console.log("User already authenticated, redirecting to /");
       navigate("/");
     }
   }, [isAuthenticated, navigate]);
@@ -23,41 +22,23 @@ const AuthPage = () => {
     <div className="flex flex-col items-center justify-center min-h-screen space-y-4 bg-gray-100 px-4">
       <button
         className="bg-blue-500 text-white px-6 py-3 rounded-md hover:bg-blue-600 transition"
-        onClick={() => {
-          console.log("Opening login modal");
-          setShowLogin(true);
-        }}
+        onClick={() => setShowLogin(true)}
       >
         Login
       </button>
       <button
         className="bg-green-500 text-white px-6 py-3 rounded-md hover:bg-green-600 transition"
-        onClick={() => {
-          console.log("Opening register modal");
-          setShowRegister(true);
-        }}
+        onClick={() => setShowRegister(true)}
       >
         Register
       </button>
 
-      <Modal isOpen={showLogin} onClose={() => {
-        console.log("Closing login modal");
-        setShowLogin(false);
-      }}>
-        <Login onSuccess={() => {
-          console.log("Login modal closed after successful login");
-          setShowLogin(false);
-        }} />
+      <Modal isOpen={showLogin} onClose={() => setShowLogin(false)}>
+        <Login onSuccess={() => setShowLogin(false)} />
       </Modal>
 
-      <Modal isOpen={showRegister} onClose={() => {
-        console.log("Closing register modal");
-        setShowRegister(false);
-      }}>
-        <Register onSuccess={() => {
-          console.log("Register modal closed after successful registration");
-          setShowRegister(false);
-        }} />
+      <Modal isOpen={showRegister} onClose={() => setShowRegister(false)}>
+        <Register onSuccess={() => setShowRegister(false)} />
       </Modal>
     </div>
   );

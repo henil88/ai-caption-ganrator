@@ -93,7 +93,6 @@ frontend/
 │   ├── routes/
 │   │   └── MainRoutes.jsx
 │   ├── utils/
-│   │   ├── checkAuthCookie.js
 │   │   ├── formData.js
 │   │   └── Model.jsx
 │   ├── App.jsx

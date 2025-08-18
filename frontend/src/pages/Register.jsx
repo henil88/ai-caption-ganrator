@@ -1,42 +1,32 @@
-import React, { useContext } from "react";
+import { useContext } from "react";
 import { useForm } from "react-hook-form";
 import { registerApi } from "../api/authApi";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { AuthContext } from "../context/authContext";
 
-const Register = ({ onSuccess }) => {
+const Register = () => {
+  const { login } = useContext(AuthContext);
+
   const {
     register,
     handleSubmit,
     formState: { errors },
   } = useForm();
   const navigate = useNavigate();
-  const { register: registerUser } = useContext(AuthContext);
-
   const userData = async (data) => {
     try {
-      console.log("Register attempt:", { username: data.username });
       const res = await registerApi(data);
       const username = res.data?.newUser?.username;
-
-      if (username) {
-        registerUser(username);
-        toast.success("User registered successfully");
-        console.log("Register success:", { username });
-        navigate("/");
-        if (onSuccess) onSuccess();
-      } else {
-        console.error("Register failed: Invalid response from server", res);
-        toast.error("Invalid response from server");
-      }
+      console.log(username);
+      login(username);
+      toast.success(res.data?.message);
+      navigate("/");
     } catch (error) {
-      const errorMessage = error.response?.data?.message || "Registration failed";
-      console.error("Register error:", { error: errorMessage, details: error.response?.data || error.message });
-      toast.error(errorMessage);
+      console.error("Server response:", error.response.data);
+      toast.error(error.response.data.message);
     }
   };
-
   return (
     <div className="flex justify-center items-center h-[50%] px-4">
       <div className="w-full max-w-md p-6 sm:p-8 bg-white rounded-lg shadow-md">

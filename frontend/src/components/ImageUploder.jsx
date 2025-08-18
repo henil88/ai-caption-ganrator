@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { useForm, Controller } from "react-hook-form";
 import { uploadImage } from "../api/imageApi";
 import LanguageDropdown from "./LanguageDropdown";
@@ -6,8 +6,10 @@ import ToneDropdown from "./ToneDropdown";
 import Loader from "./Loader";
 import CopyButton from "./CopyButton";
 import { toast } from "react-toastify";
+import { AuthContext } from "../context/authContext";
 
 const ImageUploader = () => {
+  const { isAuthenticated } = useContext(AuthContext);
   const {
     register,
     handleSubmit,
@@ -19,6 +21,11 @@ const ImageUploader = () => {
   const [loading, setLoading] = useState(false);
 
   const imagedata = async (data) => {
+    if (!isAuthenticated) {
+      toast.error("Please login first to upload images.");
+      return;
+    }
+
     try {
       setLoading(true);
       setCaption("");

@@ -4,51 +4,40 @@ export const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [username, setUsername] = useState(null);
 
+  // Initialize auth state from localStorage
   useEffect(() => {
-    // Check authentication status on component mount
-    const username = localStorage.getItem("username");
-    setIsAuthenticated(!!username);
-    console.log("Auth check on mount:", { isAuthenticated: !!username, username });
-
-    // Sync authentication status across tabs
-    const checkAuth = () => {
-      const updatedUsername = localStorage.getItem("username");
-      setIsAuthenticated(!!updatedUsername);
-      console.log("Auth synced across tabs:", { isAuthenticated: !!updatedUsername, username: updatedUsername });
-    };
-    window.addEventListener("storage", checkAuth);
-    return () => window.removeEventListener("storage", checkAuth);
+    const storedUser = localStorage.getItem("username");
+    if (storedUser) {
+      setUsername(storedUser);
+      setIsAuthenticated(true);
+    }
   }, []);
 
-  const login = (username) => {
-    if (!username) {
-      console.error("Login failed: No username provided");
-      return;
-    }
-    localStorage.setItem("username", username);
+  // Login function
+  const login = (user) => {
+    localStorage.setItem("username", user);
+    setUsername(user);
     setIsAuthenticated(true);
-    console.log("Login successful:", { username });
   };
 
+  // Logout function
   const logout = () => {
     localStorage.removeItem("username");
+    setUsername(null);
     setIsAuthenticated(false);
-    console.log("Logout successful");
-  };
-
-  const register = (username) => {
-    if (!username) {
-      console.error("Register failed: No username provided");
-      return;
-    }
-    localStorage.setItem("username", username);
-    setIsAuthenticated(true);
-    console.log("Register successful:", { username });
   };
 
   return (
-    <AuthContext.Provider value={{ isAuthenticated, login, logout, register }}>
+    <AuthContext.Provider
+      value={{
+        isAuthenticated,
+        username,
+        login,
+        logout,
+      }}
+    >
       {children}
     </AuthContext.Provider>
   );

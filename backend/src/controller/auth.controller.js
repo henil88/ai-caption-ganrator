@@ -59,6 +59,8 @@ async function loginController(req, res) {
 
   res.status(200).json({
     message: "User login succes",
+    username,
+    password,
   });
 }
 module.exports = {

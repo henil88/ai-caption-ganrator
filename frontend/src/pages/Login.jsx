@@ -1,42 +1,32 @@
-import React, { useContext } from "react";
+import { useContext } from "react";
 import { useForm } from "react-hook-form";
 import { loginApi } from "../api/authApi";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 import { AuthContext } from "../context/authContext";
 
-const Login = ({ onSuccess }) => {
+const Login = () => {
+  const { login } = useContext(AuthContext);
+
   const {
     register,
     handleSubmit,
     formState: { errors },
   } = useForm();
-  const { login } = useContext(AuthContext);
   const navigate = useNavigate();
-
   const userData = async (data) => {
     try {
-      console.log("Login attempt:", { username: data.username });
       const res = await loginApi(data);
-      const username = res.data?.username || res.data?.user?.username;
-
-      if (username) {
-        login(username);
-        toast.success("User logged in");
-        console.log("Login success:", { username });
-        navigate("/");
-        if (onSuccess) onSuccess();
-      } else {
-        console.error("Login failed: Invalid response from server", res);
-        toast.error("Invalid response from server");
-      }
+      const username = res.data.username;
+      console.log(username);
+      login(username);
+      toast.success(res.data?.message);
+      navigate("/");
     } catch (error) {
-      const errorMessage = error.response?.data?.message || "Login failed";
-      console.error("Login error:", { error: errorMessage, details: error.response?.data || error.message });
-      toast.error(errorMessage);
+      console.error("Server response:", error.response.data);
+      toast.error(error.response.data?.message);
     }
   };
-
   return (
     <div className="flex justify-center items-center h-[50%] px-4">
       <div className="w-full max-w-md p-6 sm:p-8 bg-white rounded-lg shadow-md overflow-y-auto max-h-[90vh]">
