@@ -9,8 +9,7 @@ app.use(express.json());
 app.use(cookieParser());
 app.use(
   cors({
-    // origin: "https://ai-caption-generator-free.netlify.app",
-    origin: "http://localhost:5173",
+    origin: "https://ai-caption-generator-free.netlify.app",
     credentials: true,
   })
 );
