@@ -16,20 +16,24 @@ const Register = ({ onSuccess }) => {
 
   const userData = async (data) => {
     try {
+      console.log("Register attempt:", { username: data.username });
       const res = await registerApi(data);
       const username = res.data?.newUser?.username;
 
       if (username) {
         registerUser(username);
         toast.success("User registered successfully");
+        console.log("Register success:", { username });
         navigate("/");
-        if (onSuccess) onSuccess(); // 👈 close modal if provided
+        if (onSuccess) onSuccess();
       } else {
+        console.error("Register failed: Invalid response from server", res);
         toast.error("Invalid response from server");
       }
     } catch (error) {
-      console.error(error.response?.data || error.message);
-      toast.error(error.response?.data?.message || "Registration failed");
+      const errorMessage = error.response?.data?.message || "Registration failed";
+      console.error("Register error:", { error: errorMessage, details: error.response?.data || error.message });
+      toast.error(errorMessage);
     }
   };
 
