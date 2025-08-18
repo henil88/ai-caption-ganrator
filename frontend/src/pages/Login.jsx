@@ -5,29 +5,31 @@ import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 import { AuthContext } from "../context/authContext";
 
-const Login = () => {
+const Login = ({ onSuccess }) => {
   const {
     register,
     handleSubmit,
     formState: { errors },
   } = useForm();
-  const { setIsAuthenticated } = useContext(AuthContext);
+  const { login } = useContext(AuthContext);
   const navigate = useNavigate();
 
   const userData = async (data) => {
     try {
       const res = await loginApi(data);
       const username = res.data?.username || res.data?.user?.username;
-      if (username) {
-        localStorage.setItem("username", username);
-      }
-      setIsAuthenticated(true);
 
-      toast.success("User logged in");
-      navigate("/");
+      if (username) {
+        login(username);
+        toast.success("User logged in");
+        navigate("/");
+        if (onSuccess) onSuccess(); // 👈 close modal if provided
+      } else {
+        toast.error("Invalid response from server");
+      }
     } catch (error) {
-      console.error(error.response.data);
-      toast.error(error.response.data.message);
+      console.error(error.response?.data || error.message);
+      toast.error(error.response?.data?.message || "Login failed");
     }
   };
 
